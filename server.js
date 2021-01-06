@@ -3,6 +3,7 @@ const path=require('path');
 const http=require('http');
 const socketio=require('socket.io');
 const formatMessage = require('./utils/messages');
+
 const {
   userJoin,
   getCurrentUser,
@@ -36,8 +37,6 @@ io.on('connection',socket=>{
       });
     })
    
-    
-
     //listen for chat message
     socket.on('chatMessage',(msg)=>{
         const user=getCurrentUser(socket.id);
@@ -47,17 +46,14 @@ io.on('connection',socket=>{
     socket.on('disconnect', ()=>{
     const user=userLeave(socket.id);
     if(user){
-io.to(user.room).emit('message',formatMessage(bothName,` ${user.username} has left the chat`));
-// Send users and room info
+      io.to(user.room).emit('message',formatMessage(bothName,` ${user.username} has left the chat`));
+        // Send users and room info
       io.to(user.room).emit('roomUsers', {
         room: user.room,
         users: getRoomUsers(user.room)
       });
     }
-
-
-    
-    });
+  });
 
 });
 
